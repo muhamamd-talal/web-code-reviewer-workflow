@@ -30,12 +30,17 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: action-workspace
+        
     - name: Parse Critical Issues
       if: github.event.action != 'closed'
       uses: actions/github-script@v6
       with:
         script: |
-          const utils = require('./src/deep-review-utils.js');
+          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
           await utils.parseIssues({ github, context, core });
 
     - name: Add Reviewer
@@ -45,7 +50,7 @@ runs:
         REVIEWER_NAME: ${{ inputs.reviewer_name }}
       with:
         script: |
-          const utils = require('./src/deep-review-utils.js');
+          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
           await utils.addReviewer({ github, context, core });
 
     - name: Create JIRA Ticket
@@ -58,5 +63,5 @@ runs:
         JIRA_BOARD_KEY: ${{ inputs.jira_board_key }}
       with:
         script: |
-          const utils = require('./src/deep-review-utils.js');
+          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
           await utils.createJiraTicket({ core, context }); 
