@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Process Code Review
-        uses: tajawal/web-code-reviewer-workflow@v1
+        uses: muhammad-talal/web-code-reviewer-workflow@v1
         with:
           reviewer_name: 'your-reviewer'
           jira_assignee_email: 'assignee@example.com'
