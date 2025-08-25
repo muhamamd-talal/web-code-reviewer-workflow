@@ -1,6 +1,6 @@
 name: 'Web Code Reviewer Workflow'
 description: 'Processes DeepReview comments, adds reviewers, and creates JIRA tickets for critical issues'
-author: 'Muhamma Talal'
+author: 'Muhammad Talal'
 
 inputs:
   reviewer_name:
