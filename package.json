@@ -1,5 +1,5 @@
 {
-  "name": "@tajawal/web-code-reviewer-workflow",
+  "name": "@muhamamd-talal/web-code-reviewer-workflow",
   "version": "1.0.0",
   "description": "GitHub Action for processing DeepReview comments, adding reviewers, and creating JIRA tickets",
   "main": "src/deep-review-utils.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tajawal/web-code-reviewer-workflow.git"
+    "url": "git+https://github.com/muhamamd-talal/web-code-reviewer-workflow.git"
   },
   "keywords": [
     "github",
@@ -20,9 +20,9 @@
   "author": "Tajawal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tajawal/web-code-reviewer-workflow/issues"
+    "url": "https://github.com/muhamamd-talal/web-code-reviewer-workflow/issues"
   },
-  "homepage": "https://github.com/tajawal/web-code-reviewer-workflow#readme",
+  "homepage": "https://github.com/muhamamd-talal/web-code-reviewer-workflow#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
