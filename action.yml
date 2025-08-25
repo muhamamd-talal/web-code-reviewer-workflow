@@ -1,0 +1,62 @@
+name: 'Web Code Reviewer Workflow'
+description: 'Processes DeepReview comments, adds reviewers, and creates JIRA tickets for critical issues'
+author: 'Tajawal'
+
+inputs:
+  reviewer_name:
+    description: 'GitHub username of the reviewer to assign'
+    required: true
+  jira_assignee_email:
+    description: 'Email of the JIRA user to assign tickets to'
+    required: true
+  jira_board_key:
+    description: 'JIRA board/project key where tickets will be created'
+    required: true
+  jira_base_url:
+    description: 'Base URL of your JIRA instance'
+    required: true
+  jira_api_token:
+    description: 'JIRA API token for authentication'
+    required: true
+
+outputs:
+  has-issues:
+    description: 'Whether any critical issues were found (true/false)'
+  issues:
+    description: 'JSON string containing all critical issues found'
+  ticket-key:
+    description: 'Key of the created JIRA ticket (if any)'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Parse Critical Issues
+      if: github.event.action != 'closed'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const utils = require('./src/deep-review-utils.js');
+          await utils.parseIssues({ github, context, core });
+
+    - name: Add Reviewer
+      if: github.event.action != 'closed'
+      uses: actions/github-script@v6
+      env:
+        REVIEWER_NAME: ${{ inputs.reviewer_name }}
+      with:
+        script: |
+          const utils = require('./src/deep-review-utils.js');
+          await utils.addReviewer({ github, context, core });
+
+    - name: Create JIRA Ticket
+      if: github.event.action == 'closed' && github.event.pull_request.merged == true
+      uses: actions/github-script@v6
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira_base_url }}
+        JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
+        JIRA_ASSIGNEE_EMAIL: ${{ inputs.jira_assignee_email }}
+        JIRA_BOARD_KEY: ${{ inputs.jira_board_key }}
+      with:
+        script: |
+          const utils = require('./src/deep-review-utils.js');
+          await utils.createJiraTicket({ core, context }); 
