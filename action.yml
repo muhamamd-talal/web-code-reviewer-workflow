@@ -30,17 +30,16 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        path: action-workspace
-        
     - name: Parse Critical Issues
       if: github.event.action != 'closed'
       uses: actions/github-script@v6
+      env:
+        ACTION_PATH: ${{ github.action_path }}
       with:
         script: |
-          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
+          const path = require('path');
+          const utilsPath = path.join(process.env.ACTION_PATH, 'src', 'deep-review-utils.js');
+          const utils = require(utilsPath);
           await utils.parseIssues({ github, context, core });
 
     - name: Add Reviewer
@@ -48,9 +47,12 @@ runs:
       uses: actions/github-script@v6
       env:
         REVIEWER_NAME: ${{ inputs.reviewer_name }}
+        ACTION_PATH: ${{ github.action_path }}
       with:
         script: |
-          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
+          const path = require('path');
+          const utilsPath = path.join(process.env.ACTION_PATH, 'src', 'deep-review-utils.js');
+          const utils = require(utilsPath);
           await utils.addReviewer({ github, context, core });
 
     - name: Create JIRA Ticket
@@ -61,7 +63,10 @@ runs:
         JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
         JIRA_ASSIGNEE_EMAIL: ${{ inputs.jira_assignee_email }}
         JIRA_BOARD_KEY: ${{ inputs.jira_board_key }}
+        ACTION_PATH: ${{ github.action_path }}
       with:
         script: |
-          const utils = require('${{ github.action_path }}/src/deep-review-utils.js');
+          const path = require('path');
+          const utilsPath = path.join(process.env.ACTION_PATH, 'src', 'deep-review-utils.js');
+          const utils = require(utilsPath);
           await utils.createJiraTicket({ core, context }); 
